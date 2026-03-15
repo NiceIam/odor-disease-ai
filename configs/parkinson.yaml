@@ -1,0 +1,28 @@
+# Configuración para detección de Parkinson
+
+data:
+  train_path: "data/processed/parkinson_train.npy"
+  val_path: "data/processed/parkinson_val.npy"
+  test_path: "data/processed/parkinson_test.npy"
+
+model:
+  type: "rescnn1d"
+  n_sensors: 8
+  signal_length: 1000
+  n_classes: 2
+
+training:
+  batch_size: 24
+  epochs: 120
+  learning_rate: 0.0008
+  weight_decay: 0.0001
+
+class_names:
+  - "Sano"
+  - "Parkinson"
+
+disease_info:
+  name: "Parkinson"
+  biomarker: "Sebo dérmico (caso Joy Milne)"
+  expected_accuracy: ">85%"
+  detection_method: "Análisis de piel/sudor"
