@@ -1,91 +1,76 @@
-# 🧬 Salud Multimodal - IA Diagnóstico por Olor
+# 🧬 Multimodal Health - AI Diagnosis by Smell
+Artificial intelligence system that diagnoses diseases through the analysis of volatile organic compounds (VOCs) detected by electrochemical sensors (electronic nose).
 
-Sistema de inteligencia artificial que diagnostica enfermedades mediante el análisis de compuestos orgánicos volátiles (COVs) detectados por sensores electroquímicos (nariz artificial).
+## Objective
+Detect molecular patterns associated with diseases such as diabetes, lung cancer, Parkinson's, and COVID-19 before clinical symptoms appear, using MOX/QCM sensor data that analyzes breath, sweat, and urine.
 
-## 🎯 Objetivo
+## Detectable Diseases
+- **Type 2 Diabetes**: Acetone in breath (85–92% accuracy)
+- **Lung Cancer**: Benzene (up to 90% sensitivity)
+- **Parkinson's**: Dermal sebum (Joy Milne case)
+- **COVID-19**: Unique volatile profile (validated in UK)
+- **Renal Failure**: Ammonia (detectable without biopsy)
 
-Detectar patrones moleculares asociados a enfermedades como diabetes, cáncer de pulmón, Parkinson y COVID-19 antes de que aparezcan síntomas clínicos, utilizando datos de sensores MOX/QCM que analizan aliento, sudor y orina.
-
-## 🔬 Enfermedades Detectables
-
-- **Diabetes tipo 2**: Acetona en aliento (85-92% accuracy)
-- **Cáncer de pulmón**: Benceno (hasta 90% sensibilidad)
-- **Parkinson**: Sebo dérmico (caso Joy Milne)
-- **COVID-19**: Perfil volátil único (validado en UK)
-- **Insuficiencia renal**: Amoníaco (detectable sin biopsia)
-
-## 🏗️ Arquitectura del Pipeline
-
+## Pipeline Architecture
 ```
-Nariz Electrónica → Preprocesamiento → Feature Extraction → Modelo Clasificador → Diagnóstico
-(Sensores MOX/QCM)  (Filtrado/Norm.)   (PCA/Espectrograma)  (CNN 1D/Transformer)  (Prob. + Confianza)
+Electronic Nose → Preprocessing → Feature Extraction → Classifier Model → Diagnosis
+(MOX/QCM Sensors)  (Filter/Norm.)   (PCA/Spectrogram)   (1D CNN/Transformer)  (Prob. + Confidence)
 ```
 
-## 📊 Datasets Públicos
+## Public Datasets
+- **UCI e-Nose**: Classic electronic nose dataset
+- **Kaggle ENOSE**: Gas sensor data
+- **OpenSmell (MIT)**: Molecular profiles
 
-- **UCI e-Nose**: Dataset clásico de narices electrónicas
-- **Kaggle ENOSE**: Datos de sensores de gas
-- **OpenSmell (MIT)**: Perfiles moleculares
-
-## 🛠️ Hardware Compatible
-
-- Sensores MQ (Arduino)
+## Compatible Hardware
+- MQ Sensors (Arduino)
 - Bosch BME688
 - Aromyx module
 
-## 🚀 Instalación
-
+## Installation
 ```bash
 pip install -r requirements.txt
 ```
 
-## 📖 Uso
-
+## Usage
 ```bash
-# Entrenar modelo
+# Train model
 python src/train.py --config configs/diabetes_breath.yaml
-
-# Evaluar
+# Evaluate
 python src/evaluate.py --model checkpoints/best_model.pth --data data/test
-
-# Inferencia en tiempo real
+# Real-time inference
 python src/inference.py --sensor-port COM3
 ```
 
-## 📁 Estructura del Proyecto
-
+## Project Structure
 ```
-salud-multimodal/
-├── data/                  # Datasets y datos de sensores
-├── src/                   # Código fuente
-├── models/                # Arquitecturas de modelos
-├── configs/               # Configuraciones de entrenamiento
-├── notebooks/             # Análisis exploratorio
-├── checkpoints/           # Modelos entrenados
-└── docs/                  # Documentación técnica
+multimodal-health/
+├── data/                  # Datasets and sensor data
+├── src/                   # Source code
+├── models/                # Model architectures
+├── configs/               # Training configurations
+├── notebooks/             # Exploratory analysis
+├── checkpoints/           # Trained models
+└── docs/                  # Technical documentation
 ```
 
-## 🧪 Stack Tecnológico
-
+## Tech Stack
 - **Python 3.9+**
 - **PyTorch**: Deep learning
-- **NumPy/SciPy**: Procesamiento de señales
+- **NumPy/SciPy**: Signal processing
 - **Scikit-learn**: Feature extraction
-- **Pandas**: Manipulación de datos
+- **Pandas**: Data manipulation
 
-## 🎓 Por Qué Este Proyecto Destaca
+## Why This Project Stands Out
+1. **Unconventional data**: Works with chemical sensor signals, not text or images
+2. **Multidisciplinary**: Combines physical hardware + ML + medical domain knowledge
+3. **Real impact**: Early diagnosis can save lives
+4. **Innovation**: Replaces detection dogs with AI (>90% accuracy)
 
-1. **Datos no convencionales**: Trabaja con señales de sensores químicos, no texto ni imágenes
-2. **Multidisciplinario**: Combina hardware físico + ML + dominio médico
-3. **Impacto real**: Diagnóstico temprano puede salvar vidas
-4. **Innovación**: Reemplaza perros detectores con IA (>90% precisión)
-
-## 📚 Referencias Científicas
-
+## Scientific References
 - Amann et al. (2014) - VOCs in breath analysis
 - Haick et al. (2014) - Electronic noses for disease detection
 - Joy Milne case study - Parkinson's detection by smell
 
-## 📄 Licencia
-
+## License
 MIT License
