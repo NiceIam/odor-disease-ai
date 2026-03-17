@@ -1,4 +1,4 @@
-# Configuración para detección de diabetes tipo 2 por aliento
+# Configuration for type 2 diabetes detection by breath
 
 data:
   train_path: "data/processed/diabetes_train.npy"
@@ -6,10 +6,10 @@ data:
   test_path: "data/processed/diabetes_test.npy"
 
 model:
-  type: "cnn1d"  # opciones: cnn1d, rescnn1d, transformer
+  type: "cnn1d"  # options: cnn1d, rescnn1d, transformer
   n_sensors: 8
   signal_length: 1000
-  n_classes: 2  # Sano vs Diabetes
+  n_classes: 2  # Healthy vs Diabetes
 
 training:
   batch_size: 32
@@ -18,11 +18,11 @@ training:
   weight_decay: 0.0001
 
 class_names:
-  - "Sano"
-  - "Diabetes Tipo 2"
+  - "Healthy"
+  - "Type 2 Diabetes"
 
 disease_info:
-  name: "Diabetes Tipo 2"
-  biomarker: "Acetona en aliento"
+  name: "Type 2 Diabetes"
+  biomarker: "Acetone in breath"
   expected_accuracy: "85-92%"
-  detection_method: "Análisis de compuestos orgánicos volátiles (COVs)"
+  detection_method: "Volatile organic compound (VOC) analysis"

@@ -1,4 +1,4 @@
-# Configuración para detección de cáncer de pulmón
+# Configuration for lung cancer detection
 
 data:
   train_path: "data/processed/lung_cancer_train.npy"
@@ -18,11 +18,11 @@ training:
   weight_decay: 0.0001
 
 class_names:
-  - "Sano"
-  - "Cáncer de Pulmón"
+  - "Healthy"
+  - "Lung Cancer"
 
 disease_info:
-  name: "Cáncer de Pulmón"
-  biomarker: "Benceno y otros COVs"
-  expected_accuracy: "hasta 90% sensibilidad"
-  detection_method: "Análisis de aliento"
+  name: "Lung Cancer"
+  biomarker: "Benzene and other VOCs"
+  expected_accuracy: "up to 90% sensitivity"
+  detection_method: "Breath analysis"

@@ -1,5 +1,5 @@
 """
-Genera datos sintéticos de sensores para pruebas
+Generates synthetic sensor data for testing
 """
 import numpy as np
 from pathlib import Path
@@ -7,32 +7,32 @@ from pathlib import Path
 
 def generate_sensor_signal(n_samples=1000, noise_level=0.1, pattern='diabetes'):
     """
-    Genera señal sintética de sensor con patrones específicos
+    Generates synthetic sensor signal with specific patterns
     
     Args:
-        n_samples: Número de muestras temporales
-        noise_level: Nivel de ruido
-        pattern: Tipo de patrón ('diabetes', 'cancer', 'healthy')
+        n_samples: Number of temporal samples
+        noise_level: Noise level
+        pattern: Pattern type ('diabetes', 'cancer', 'healthy')
     """
     t = np.linspace(0, 10, n_samples)
     
     if pattern == 'diabetes':
-        # Patrón con pico de acetona
+        # Pattern with acetone peak
         signal = 2.0 * np.sin(2 * np.pi * 0.5 * t) + 1.5 * np.sin(2 * np.pi * 1.2 * t)
-        signal += 0.8 * np.exp(-((t - 5)**2) / 2)  # Pico gaussiano
+        signal += 0.8 * np.exp(-((t - 5)**2) / 2)  # Gaussian peak
     elif pattern == 'cancer':
-        # Patrón con múltiples frecuencias (benceno)
+        # Pattern with multiple frequencies (benzene)
         signal = 1.5 * np.sin(2 * np.pi * 0.8 * t) + 0.7 * np.sin(2 * np.pi * 2.0 * t)
         signal += 0.5 * np.sin(2 * np.pi * 3.5 * t)
     elif pattern == 'parkinson':
-        # Patrón con deriva lenta
+        # Pattern with slow drift
         signal = 1.2 * np.sin(2 * np.pi * 0.3 * t) + 0.3 * t
         signal += 0.6 * np.sin(2 * np.pi * 1.5 * t)
     else:  # healthy
-        # Patrón base normal
+        # Normal baseline pattern
         signal = np.sin(2 * np.pi * 0.5 * t) + 0.5 * np.sin(2 * np.pi * 1.0 * t)
     
-    # Añadir ruido
+    # Add noise
     noise = np.random.normal(0, noise_level, n_samples)
     signal += noise
     
@@ -41,7 +41,7 @@ def generate_sensor_signal(n_samples=1000, noise_level=0.1, pattern='diabetes'):
 
 def generate_dataset(n_samples_per_class=500, n_sensors=8, signal_length=1000):
     """
-    Genera dataset completo con múltiples clases
+    Generates complete dataset with multiple classes
     """
     all_signals = []
     all_labels = []
@@ -50,10 +50,10 @@ def generate_dataset(n_samples_per_class=500, n_sensors=8, signal_length=1000):
     
     for label, pattern in enumerate(patterns):
         for _ in range(n_samples_per_class):
-            # Generar señales para todos los sensores
+            # Generate signals for all sensors
             sensor_array = []
             for sensor_id in range(n_sensors):
-                # Cada sensor tiene ligeras variaciones
+                # Each sensor has slight variations
                 noise_level = 0.1 + sensor_id * 0.01
                 signal = generate_sensor_signal(signal_length, noise_level, pattern)
                 sensor_array.append(signal)
@@ -65,34 +65,34 @@ def generate_dataset(n_samples_per_class=500, n_sensors=8, signal_length=1000):
 
 
 def main():
-    """Genera y guarda datasets sintéticos"""
+    """Generates and saves synthetic datasets"""
     
-    # Crear directorios
+    # Create directories
     data_dir = Path('data/processed')
     data_dir.mkdir(parents=True, exist_ok=True)
     
-    print("Generando dataset de diabetes...")
+    print("Generating diabetes dataset...")
     
     # Train set
     train_signals, train_labels = generate_dataset(n_samples_per_class=400)
     train_data = {'signals': train_signals, 'labels': train_labels}
     np.save(data_dir / 'diabetes_train.npy', train_data)
-    print(f"Train set guardado: {train_signals.shape}")
+    print(f"Train set saved: {train_signals.shape}")
     
     # Validation set
     val_signals, val_labels = generate_dataset(n_samples_per_class=100)
     val_data = {'signals': val_signals, 'labels': val_labels}
     np.save(data_dir / 'diabetes_val.npy', val_data)
-    print(f"Validation set guardado: {val_signals.shape}")
+    print(f"Validation set saved: {val_signals.shape}")
     
     # Test set
     test_signals, test_labels = generate_dataset(n_samples_per_class=100)
     test_data = {'signals': test_signals, 'labels': test_labels}
     np.save(data_dir / 'diabetes_test.npy', test_data)
-    print(f"Test set guardado: {test_signals.shape}")
+    print(f"Test set saved: {test_signals.shape}")
     
-    print("\n¡Datasets sintéticos generados exitosamente!")
-    print(f"Ubicación: {data_dir.absolute()}")
+    print("\nSynthetic datasets generated successfully!")
+    print(f"Location: {data_dir.absolute()}")
 
 
 if __name__ == '__main__':

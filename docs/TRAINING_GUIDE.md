@@ -1,42 +1,42 @@
-# Guía de Entrenamiento
+# Training Guide
 
-## Preparación del Entorno
+## Environment Setup
 
-### 1. Instalación
+### 1. Installation
 
 ```bash
-# Clonar repositorio
-git clone https://github.com/tu-usuario/salud-multimodal.git
-cd salud-multimodal
+# Clone repository
+git clone https://github.com/NiceIam/odor-disease-ai.git
+cd odor-disease-ai
 
-# Crear entorno virtual
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# o
+# or
 venv\Scripts\activate  # Windows
 
-# Instalar dependencias
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Generar Datos Sintéticos
+### 2. Generate Synthetic Data
 
 ```bash
 python scripts/generate_synthetic_data.py
 ```
 
-Esto creará:
+This will create:
 - `data/processed/diabetes_train.npy`
 - `data/processed/diabetes_val.npy`
 - `data/processed/diabetes_test.npy`
 
-## Configuración del Modelo
+## Model Configuration
 
-Edita el archivo de configuración en `configs/diabetes_breath.yaml`:
+Edit the configuration file in `configs/diabetes_breath.yaml`:
 
 ```yaml
 model:
-  type: "cnn1d"  # Opciones: cnn1d, rescnn1d, transformer
+  type: "cnn1d"  # Options: cnn1d, rescnn1d, transformer
   n_sensors: 8
   signal_length: 1000
   n_classes: 2
@@ -47,39 +47,39 @@ training:
   learning_rate: 0.001
 ```
 
-## Entrenamiento
+## Training
 
-### Entrenamiento Básico
+### Basic Training
 
 ```bash
 python src/train.py --config configs/diabetes_breath.yaml
 ```
 
-### Monitoreo con TensorBoard
+### Monitoring with TensorBoard
 
 ```bash
-# En otra terminal
+# In another terminal
 tensorboard --logdir=runs
 ```
 
-Abre http://localhost:6006 en tu navegador.
+Open http://localhost:6006 in your browser.
 
-### Entrenamiento con GPU
+### Training with GPU
 
-El código detecta automáticamente si hay GPU disponible:
+The code automatically detects if GPU is available:
 
 ```python
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ```
 
-Para forzar CPU:
+To force CPU:
 ```bash
 CUDA_VISIBLE_DEVICES="" python src/train.py --config configs/diabetes_breath.yaml
 ```
 
-## Evaluación
+## Evaluation
 
-### Evaluar Modelo Entrenado
+### Evaluate Trained Model
 
 ```bash
 python src/evaluate.py \
@@ -88,19 +88,19 @@ python src/evaluate.py \
   --batch-size 32
 ```
 
-Esto generará:
+This will generate:
 - Classification report (precision, recall, F1)
-- Confusion matrix (guardada como PNG)
-- Accuracy por clase
+- Confusion matrix (saved as PNG)
+- Accuracy per class
 
-### Métricas Esperadas
+### Expected Metrics
 
-Para el dataset de diabetes sintético:
+For synthetic diabetes dataset:
 
 ```
               precision    recall  f1-score   support
 
-        Sano       0.92      0.89      0.90       100
+     Healthy       0.92      0.89      0.90       100
     Diabetes       0.90      0.93      0.91       100
 
     accuracy                           0.91       200
@@ -108,75 +108,75 @@ Para el dataset de diabetes sintético:
 weighted avg       0.91      0.91      0.91       200
 ```
 
-## Hiperparámetros
+## Hyperparameters
 
 ### Learning Rate
 
-Experimenta con diferentes valores:
+Experiment with different values:
 
 ```yaml
 training:
-  learning_rate: 0.001  # Estándar
-  # learning_rate: 0.0001  # Más conservador
-  # learning_rate: 0.01  # Más agresivo
+  learning_rate: 0.001  # Standard
+  # learning_rate: 0.0001  # More conservative
+  # learning_rate: 0.01  # More aggressive
 ```
 
 ### Batch Size
 
-Ajusta según tu memoria GPU:
+Adjust according to your GPU memory:
 
 ```yaml
 training:
-  batch_size: 32   # GPU con 8GB
-  # batch_size: 16   # GPU con 4GB
-  # batch_size: 64   # GPU con 16GB+
+  batch_size: 32   # GPU with 8GB
+  # batch_size: 16   # GPU with 4GB
+  # batch_size: 64   # GPU with 16GB+
 ```
 
-### Arquitectura del Modelo
+### Model Architecture
 
-#### CNN 1D (Rápido, eficiente)
+#### CNN 1D (Fast, efficient)
 ```yaml
 model:
   type: "cnn1d"
 ```
 
-Ventajas:
-- Entrenamiento rápido
-- Menos parámetros
-- Bueno para patrones locales
+Advantages:
+- Fast training
+- Fewer parameters
+- Good for local patterns
 
-#### ResNet 1D (Mejor accuracy)
+#### ResNet 1D (Better accuracy)
 ```yaml
 model:
   type: "rescnn1d"
 ```
 
-Ventajas:
-- Conexiones residuales
-- Mejor para redes profundas
-- Evita vanishing gradient
+Advantages:
+- Residual connections
+- Better for deep networks
+- Avoids vanishing gradient
 
-#### Transformer (Estado del arte)
+#### Transformer (State of the art)
 ```yaml
 model:
   type: "transformer"
 ```
 
-Ventajas:
-- Captura dependencias largas
+Advantages:
+- Captures long dependencies
 - Self-attention
-- Mejor para secuencias complejas
+- Better for complex sequences
 
-Desventajas:
-- Más lento
-- Requiere más datos
-- Más memoria
+Disadvantages:
+- Slower
+- Requires more data
+- More memory
 
-## Técnicas Avanzadas
+## Advanced Techniques
 
 ### Data Augmentation
 
-Añade en `src/data/augmentation.py`:
+Add in `src/data/augmentation.py`:
 
 ```python
 def add_noise(signal, noise_level=0.05):
@@ -194,24 +194,24 @@ def scale(signal, scale_range=(0.9, 1.1)):
 
 ### Transfer Learning
 
-Entrena primero en un dataset grande, luego fine-tune:
+Train first on a large dataset, then fine-tune:
 
 ```python
-# Cargar modelo pre-entrenado
+# Load pre-trained model
 checkpoint = torch.load('pretrained_model.pth')
 model.load_state_dict(checkpoint['model_state_dict'])
 
-# Congelar capas iniciales
+# Freeze initial layers
 for param in model.conv1.parameters():
     param.requires_grad = False
 
-# Entrenar solo las últimas capas
+# Train only last layers
 optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()))
 ```
 
 ### Ensemble Methods
 
-Combina múltiples modelos:
+Combine multiple models:
 
 ```python
 models = [model1, model2, model3]
@@ -222,7 +222,7 @@ def ensemble_predict(models, input_data):
         pred = model(input_data)
         predictions.append(pred)
     
-    # Promedio de probabilidades
+    # Average probabilities
     ensemble_pred = torch.stack(predictions).mean(dim=0)
     return ensemble_pred
 ```
@@ -231,57 +231,57 @@ def ensemble_predict(models, input_data):
 
 ### Overfitting
 
-Síntomas:
-- Train accuracy alta, val accuracy baja
-- Loss de validación aumenta
+Symptoms:
+- High train accuracy, low val accuracy
+- Validation loss increases
 
-Soluciones:
+Solutions:
 ```yaml
 training:
-  dropout: 0.5  # Aumentar dropout
-  weight_decay: 0.001  # Añadir L2 regularization
+  dropout: 0.5  # Increase dropout
+  weight_decay: 0.001  # Add L2 regularization
 ```
 
 ### Underfitting
 
-Síntomas:
-- Train y val accuracy bajas
-- Loss no disminuye
+Symptoms:
+- Low train and val accuracy
+- Loss doesn't decrease
 
-Soluciones:
-- Aumentar capacidad del modelo
-- Entrenar más épocas
-- Reducir regularización
+Solutions:
+- Increase model capacity
+- Train more epochs
+- Reduce regularization
 
-### Convergencia Lenta
+### Slow Convergence
 
-Soluciones:
-- Aumentar learning rate
-- Usar learning rate scheduler
+Solutions:
+- Increase learning rate
+- Use learning rate scheduler
 - Batch normalization
 
 ### Out of Memory
 
-Soluciones:
-- Reducir batch size
-- Usar gradient accumulation
-- Modelo más pequeño
+Solutions:
+- Reduce batch size
+- Use gradient accumulation
+- Smaller model
 
-## Mejores Prácticas
+## Best Practices
 
-1. **Siempre usa validación cruzada** para datasets pequeños
-2. **Guarda checkpoints** cada N épocas
-3. **Monitorea métricas** con TensorBoard
-4. **Documenta experimentos** en un log
-5. **Versiona tus datos** y modelos
-6. **Prueba en datos reales** antes de deployment
+1. **Always use cross-validation** for small datasets
+2. **Save checkpoints** every N epochs
+3. **Monitor metrics** with TensorBoard
+4. **Document experiments** in a log
+5. **Version your data** and models
+6. **Test on real data** before deployment
 
-## Próximos Pasos
+## Next Steps
 
-Después de entrenar un modelo exitoso:
+After training a successful model:
 
-1. Evalúa en datos de test
-2. Analiza errores (confusion matrix)
-3. Optimiza hiperparámetros
-4. Prueba en datos reales
-5. Deploy en producción (ver `docs/DEPLOYMENT.md`)
+1. Evaluate on test data
+2. Analyze errors (confusion matrix)
+3. Optimize hyperparameters
+4. Test on real data
+5. Deploy to production (see `docs/DEPLOYMENT.md`)

@@ -1,4 +1,4 @@
-# Configuración para detección de Parkinson
+# Configuration for Parkinson's detection
 
 data:
   train_path: "data/processed/parkinson_train.npy"
@@ -18,11 +18,11 @@ training:
   weight_decay: 0.0001
 
 class_names:
-  - "Sano"
-  - "Parkinson"
+  - "Healthy"
+  - "Parkinson's"
 
 disease_info:
-  name: "Parkinson"
-  biomarker: "Sebo dérmico (caso Joy Milne)"
+  name: "Parkinson's Disease"
+  biomarker: "Dermal sebum (Joy Milne case)"
   expected_accuracy: ">85%"
-  detection_method: "Análisis de piel/sudor"
+  detection_method: "Skin/sweat analysis"

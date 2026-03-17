@@ -1,5 +1,5 @@
 """
-Dataset loader para datos de sensores
+Dataset loader for sensor data
 """
 import torch
 from torch.utils.data import Dataset
@@ -8,7 +8,7 @@ import pandas as pd
 
 
 class SensorDataset(Dataset):
-    """Dataset para señales de sensores electroquímicos"""
+    """Dataset for electrochemical sensor signals"""
     
     def __init__(self, data_path, transform=None, feature_extractor=None):
         """
@@ -20,7 +20,7 @@ class SensorDataset(Dataset):
         self.transform = transform
         self.feature_extractor = feature_extractor
         
-        # Cargar datos
+        # Load data
         if data_path.endswith('.csv'):
             df = pd.read_csv(data_path)
             self.labels = df['label'].values
@@ -30,7 +30,7 @@ class SensorDataset(Dataset):
             self.data = data['signals']
             self.labels = data['labels']
         else:
-            raise ValueError("Formato no soportado. Use CSV o NPY")
+            raise ValueError("Unsupported format. Use CSV or NPY")
         
     def __len__(self):
         return len(self.labels)
@@ -39,15 +39,15 @@ class SensorDataset(Dataset):
         signal = self.data[idx]
         label = self.labels[idx]
         
-        # Aplicar extracción de características si está disponible
+        # Apply feature extraction if available
         if self.feature_extractor:
             signal = self.feature_extractor.extract_all_features(signal)
         
-        # Aplicar transformaciones
+        # Apply transformations
         if self.transform:
             signal = self.transform(signal)
         
-        # Convertir a tensores
+        # Convert to tensors
         signal = torch.FloatTensor(signal)
         label = torch.LongTensor([label])
         
@@ -55,7 +55,7 @@ class SensorDataset(Dataset):
 
 
 class SpectrogramDataset(Dataset):
-    """Dataset que genera espectrogramas para CNNs"""
+    """Dataset that generates spectrograms for CNNs"""
     
     def __init__(self, data_path, sampling_rate=100, nperseg=64):
         self.sampling_rate = sampling_rate
@@ -66,7 +66,7 @@ class SpectrogramDataset(Dataset):
             self.data = data['signals']
             self.labels = data['labels']
         else:
-            raise ValueError("Use formato NPY para espectrogramas")
+            raise ValueError("Use NPY format for spectrograms")
     
     def __len__(self):
         return len(self.labels)
@@ -77,13 +77,13 @@ class SpectrogramDataset(Dataset):
         sensor_signal = self.data[idx]
         label = self.labels[idx]
         
-        # Generar espectrograma para cada sensor
+        # Generate spectrogram for each sensor
         spectrograms = []
         for s in sensor_signal:
             f, t, Sxx = signal.spectrogram(s, fs=self.sampling_rate, nperseg=self.nperseg)
             spectrograms.append(Sxx)
         
-        # Stack como canales (n_sensors, freq_bins, time_bins)
+        # Stack as channels (n_sensors, freq_bins, time_bins)
         spectrogram = np.stack(spectrograms, axis=0)
         
         return torch.FloatTensor(spectrogram), torch.LongTensor([label])

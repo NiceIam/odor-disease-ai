@@ -1,73 +1,73 @@
-# Configuración de Hardware
+# Hardware Setup
 
-## Sensores Recomendados
+## Recommended Sensors
 
-### Opción 1: Sensores MQ (Arduino)
+### Option 1: MQ Sensors (Arduino)
 
-**Ventajas:**
-- Económicos ($2-5 por sensor)
-- Fácil integración con Arduino
-- Amplia disponibilidad
+**Advantages:**
+- Affordable ($2-5 per sensor)
+- Easy integration with Arduino
+- Wide availability
 
-**Desventajas:**
-- Requieren calibración
-- Deriva temporal
-- Menor precisión
+**Disadvantages:**
+- Require calibration
+- Temporal drift
+- Lower precision
 
-**Lista de Sensores:**
-- MQ-2: Gas inflamable, humo
-- MQ-3: Alcohol, etanol
-- MQ-4: Metano, gas natural
-- MQ-5: GLP, gas natural
-- MQ-6: GLP, butano
-- MQ-7: Monóxido de carbono
-- MQ-8: Hidrógeno
-- MQ-135: Calidad del aire (NH3, NOx, alcohol, benceno)
+**Sensor List:**
+- MQ-2: Flammable gas, smoke
+- MQ-3: Alcohol, ethanol
+- MQ-4: Methane, natural gas
+- MQ-5: LPG, natural gas
+- MQ-6: LPG, butane
+- MQ-7: Carbon monoxide
+- MQ-8: Hydrogen
+- MQ-135: Air quality (NH3, NOx, alcohol, benzene)
 
-### Opción 2: Bosch BME688
+### Option 2: Bosch BME688
 
-**Ventajas:**
-- Sensor de gas con AI integrada
-- Alta precisión
-- Compensación de temperatura/humedad
-- 4 heaters programables
+**Advantages:**
+- Gas sensor with integrated AI
+- High precision
+- Temperature/humidity compensation
+- 4 programmable heaters
 
-**Desventajas:**
-- Más caro (~$15)
-- Requiere I2C/SPI
+**Disadvantages:**
+- More expensive (~$15)
+- Requires I2C/SPI
 
-**Especificaciones:**
-- Rango de detección: 1-500 ppm
-- Interfaz: I2C/SPI
-- Voltaje: 1.7-3.6V
+**Specifications:**
+- Detection range: 1-500 ppm
+- Interface: I2C/SPI
+- Voltage: 1.7-3.6V
 
-### Opción 3: Aromyx EssenceChip
+### Option 3: Aromyx EssenceChip
 
-**Ventajas:**
-- Biosensores (receptores olfativos reales)
-- Máxima precisión
-- Respuesta biológica
+**Advantages:**
+- Biosensors (real olfactory receptors)
+- Maximum precision
+- Biological response
 
-**Desventajas:**
-- Muy caro ($1000+)
-- Requiere mantenimiento
-- Vida útil limitada
+**Disadvantages:**
+- Very expensive ($1000+)
+- Requires maintenance
+- Limited lifespan
 
-## Configuración con Arduino
+## Arduino Setup
 
-### Materiales Necesarios
+### Required Materials
 
 - Arduino Uno/Mega
-- 8× Sensores MQ
-- 8× Resistencias 10kΩ
+- 8× MQ Sensors
+- 8× 10kΩ Resistors
 - Breadboard
-- Cables jumper
-- Fuente de alimentación 5V
+- Jumper wires
+- 5V power supply
 
-### Esquema de Conexión
+### Connection Diagram
 
 ```
-Arduino          Sensor MQ
+Arduino          MQ Sensor
 -------          ---------
 5V     -------> VCC
 GND    -------> GND
@@ -77,42 +77,42 @@ A1     -------> AOUT (MQ-3)
 A7     -------> AOUT (MQ-135)
 ```
 
-### Código Arduino
+### Arduino Code
 
-Sube el código en `arduino/sensor_reader.ino` a tu Arduino:
+Upload the code in `arduino/sensor_reader.ino` to your Arduino:
 
 ```bash
-# Usando Arduino IDE
-1. Abre arduino/sensor_reader.ino
-2. Selecciona tu placa (Tools > Board)
-3. Selecciona el puerto (Tools > Port)
-4. Haz clic en Upload
+# Using Arduino IDE
+1. Open arduino/sensor_reader.ino
+2. Select your board (Tools > Board)
+3. Select the port (Tools > Port)
+4. Click Upload
 ```
 
-### Calibración de Sensores
+### Sensor Calibration
 
-1. **Calentamiento:** Deja los sensores encendidos 24-48 horas
-2. **Aire limpio:** Expón a aire limpio y registra R0
-3. **Ajuste:** Modifica los valores R0 en el código
+1. **Warm-up:** Leave sensors on for 24-48 hours
+2. **Clean air:** Expose to clean air and record R0
+3. **Adjustment:** Modify R0 values in code
 
 ```cpp
 const float R0[NUM_SENSORS] = {
   10.5,  // MQ-2
   12.3,  // MQ-3
   9.8,   // MQ-4
-  // ... ajusta según tus mediciones
+  // ... adjust according to your measurements
 };
 ```
 
-## Configuración con Raspberry Pi
+## Raspberry Pi Setup
 
-### Materiales
+### Materials
 
 - Raspberry Pi 4
 - Bosch BME688 breakout board
-- Cables jumper
+- Jumper wires
 
-### Conexión I2C
+### I2C Connection
 
 ```
 Raspberry Pi     BME688
@@ -123,7 +123,7 @@ SDA (GPIO 2) --> SDA
 SCL (GPIO 3) --> SCL
 ```
 
-### Instalación de Librerías
+### Library Installation
 
 ```bash
 sudo apt-get update
@@ -131,7 +131,7 @@ sudo apt-get install python3-pip
 pip3 install bme680
 ```
 
-### Código Python
+### Python Code
 
 ```python
 import bme680
@@ -139,7 +139,7 @@ import time
 
 sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
 
-# Configurar heater
+# Configure heater
 sensor.set_gas_heater_temperature(320)
 sensor.set_gas_heater_duration(150)
 sensor.select_gas_heater_profile(0)
@@ -152,75 +152,75 @@ while True:
     time.sleep(1)
 ```
 
-## Protocolo de Recolección de Muestras
+## Sample Collection Protocol
 
-### Para Aliento
+### For Breath
 
-1. **Preparación del paciente:**
-   - Ayuno de 8 horas
-   - No fumar 2 horas antes
-   - No usar perfumes/colonias
+1. **Patient preparation:**
+   - 8-hour fasting
+   - No smoking 2 hours before
+   - No perfumes/colognes
 
-2. **Recolección:**
-   - Respirar normalmente 3 veces
-   - Exhalar completamente en bolsa Tedlar
-   - Sellar inmediatamente
+2. **Collection:**
+   - Breathe normally 3 times
+   - Exhale completely into Tedlar bag
+   - Seal immediately
 
-3. **Medición:**
-   - Conectar bolsa a sensores
-   - Registrar durante 60 segundos
-   - Purgar sistema con aire limpio
+3. **Measurement:**
+   - Connect bag to sensors
+   - Record for 60 seconds
+   - Purge system with clean air
 
-### Para Sudor
+### For Sweat
 
-1. **Preparación:**
-   - Limpiar piel con alcohol
-   - Dejar secar completamente
+1. **Preparation:**
+   - Clean skin with alcohol
+   - Let dry completely
 
-2. **Recolección:**
-   - Usar parche absorbente
-   - Dejar 30 minutos
-   - Transferir a vial hermético
+2. **Collection:**
+   - Use absorbent patch
+   - Leave for 30 minutes
+   - Transfer to airtight vial
 
-3. **Medición:**
-   - Calentar vial a 37°C
-   - Muestrear headspace con sensores
+3. **Measurement:**
+   - Heat vial to 37°C
+   - Sample headspace with sensors
 
-## Mantenimiento
+## Maintenance
 
-### Limpieza de Sensores
+### Sensor Cleaning
 
-- Cada semana: Exposición a aire limpio 24h
-- Cada mes: Limpieza con alcohol isopropílico
-- Cada 6 meses: Re-calibración completa
+- Weekly: Exposure to clean air for 24h
+- Monthly: Cleaning with isopropyl alcohol
+- Every 6 months: Complete re-calibration
 
-### Vida Útil
+### Lifespan
 
-- Sensores MQ: 2-5 años
-- BME688: 5+ años
-- Aromyx: 6-12 meses
+- MQ Sensors: 2-5 years
+- BME688: 5+ years
+- Aromyx: 6-12 months
 
 ## Troubleshooting
 
-### Lecturas Inestables
+### Unstable Readings
 
-- Verificar alimentación estable
-- Aumentar tiempo de calentamiento
-- Revisar conexiones
+- Verify stable power supply
+- Increase warm-up time
+- Check connections
 
-### Deriva de Sensores
+### Sensor Drift
 
-- Re-calibrar R0
-- Verificar temperatura ambiente
-- Reemplazar sensor si es necesario
+- Re-calibrate R0
+- Verify ambient temperature
+- Replace sensor if necessary
 
-### Ruido en Señal
+### Signal Noise
 
-- Añadir capacitor 100nF entre VCC y GND
-- Usar cables apantallados
-- Alejar de fuentes electromagnéticas
+- Add 100nF capacitor between VCC and GND
+- Use shielded cables
+- Keep away from electromagnetic sources
 
-## Referencias
+## References
 
 - [MQ Sensor Datasheet](https://www.pololu.com/file/0J309/MQ2.pdf)
 - [BME688 Datasheet](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme688-ds000.pdf)

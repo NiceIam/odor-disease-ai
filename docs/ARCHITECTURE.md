@@ -1,20 +1,20 @@
-# Arquitectura del Sistema
+# System Architecture
 
-## Pipeline Completo
+## Complete Pipeline
 
 ```
 ┌─────────────────────┐
-│ Nariz Electrónica   │
-│ (Sensores MOX/QCM)  │
-│ - 8 sensores        │
+│ Electronic Nose     │
+│ (MOX/QCM Sensors)   │
+│ - 8 sensors         │
 │ - 100 Hz sampling   │
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│ Preprocesamiento    │
-│ - Filtrado          │
-│ - Normalización     │
+│ Preprocessing       │
+│ - Filtering         │
+│ - Normalization     │
 │ - Baseline removal  │
 └──────────┬──────────┘
            │
@@ -22,13 +22,13 @@
 ┌─────────────────────┐
 │ Feature Extraction  │
 │ - PCA               │
-│ - Espectrograma     │
-│ - Stats temporales  │
+│ - Spectrogram       │
+│ - Temporal stats    │
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│ Modelo Clasificador │
+│ Classifier Model    │
 │ - CNN 1D            │
 │ - Transformer       │
 │ - ResNet 1D         │
@@ -36,152 +36,152 @@
            │
            ▼
 ┌─────────────────────┐
-│ Diagnóstico         │
-│ - Probabilidad      │
-│ - Confianza         │
-│ - Explicabilidad    │
+│ Diagnosis           │
+│ - Probability       │
+│ - Confidence        │
+│ - Explainability    │
 └─────────────────────┘
 ```
 
-## Componentes Principales
+## Main Components
 
-### 1. Adquisición de Datos
+### 1. Data Acquisition
 
-Los sensores electroquímicos (MOX/QCM) detectan compuestos orgánicos volátiles (COVs) en:
-- Aliento
-- Sudor
-- Orina
+Electrochemical sensors (MOX/QCM) detect volatile organic compounds (VOCs) in:
+- Breath
+- Sweat
+- Urine
 
-Cada sensor responde a diferentes moléculas:
-- Acetona (diabetes)
-- Benceno (cáncer)
-- Amoníaco (insuficiencia renal)
-- Compuestos específicos (Parkinson)
+Each sensor responds to different molecules:
+- Acetone (diabetes)
+- Benzene (cancer)
+- Ammonia (renal insufficiency)
+- Specific compounds (Parkinson's)
 
-### 2. Preprocesamiento
+### 2. Preprocessing
 
-**Filtrado de señal:**
-- Filtro pasa-bajos (Butterworth) para eliminar ruido de alta frecuencia
-- Filtro de mediana para eliminar deriva de línea base
-- Suavizado gaussiano
+**Signal filtering:**
+- Low-pass filter (Butterworth) to remove high-frequency noise
+- Median filter to remove baseline drift
+- Gaussian smoothing
 
-**Normalización:**
-- Z-score normalization para cada sensor
-- Estandarización entre muestras
+**Normalization:**
+- Z-score normalization for each sensor
+- Standardization across samples
 
-### 3. Extracción de Características
+### 3. Feature Extraction
 
-**Dominio temporal:**
-- Media, desviación estándar
-- Máximo, mínimo, mediana
+**Time domain:**
+- Mean, standard deviation
+- Maximum, minimum, median
 - Skewness, kurtosis
 - RMS, peak-to-peak
 
-**Dominio frecuencial:**
+**Frequency domain:**
 - FFT (Fast Fourier Transform)
-- Frecuencia dominante
-- Energía espectral
-- Centroide espectral
+- Dominant frequency
+- Spectral energy
+- Spectral centroid
 
-**Reducción dimensional:**
+**Dimensionality reduction:**
 - PCA (Principal Component Analysis)
-- Espectrogramas para CNNs
+- Spectrograms for CNNs
 
-### 4. Modelos de Clasificación
+### 4. Classification Models
 
 #### CNN 1D
-- Convoluciones 1D sobre señales temporales
-- Pooling para reducir dimensionalidad
-- Capas fully connected para clasificación
-- Dropout para regularización
+- 1D convolutions over temporal signals
+- Pooling to reduce dimensionality
+- Fully connected layers for classification
+- Dropout for regularization
 
 #### Transformer
-- Self-attention sobre secuencias temporales
-- Codificación posicional
+- Self-attention over temporal sequences
+- Positional encoding
 - Multi-head attention
-- Ideal para capturar dependencias largas
+- Ideal for capturing long dependencies
 
 #### ResNet 1D
-- Conexiones residuales
-- Evita vanishing gradient
-- Mejor para redes profundas
+- Residual connections
+- Avoids vanishing gradient
+- Better for deep networks
 - Global average pooling
 
-### 5. Salida del Sistema
+### 5. System Output
 
-**Predicción:**
-- Clase predicha (enfermedad o sano)
-- Probabilidad por clase
-- Nivel de confianza
+**Prediction:**
+- Predicted class (disease or healthy)
+- Probability per class
+- Confidence level
 
-**Métricas:**
+**Metrics:**
 - Accuracy
 - Precision, Recall, F1-score
-- Matriz de confusión
+- Confusion matrix
 - ROC-AUC
 
-## Flujo de Datos
+## Data Flow
 
 ```python
-# 1. Lectura de sensores
+# 1. Sensor reading
 sensor_data = read_sensors(n_sensors=8, duration=10s)
 # Shape: (8, 1000)
 
-# 2. Preprocesamiento
+# 2. Preprocessing
 preprocessor = SensorPreprocessor()
 clean_data = preprocessor.process_sensor_array(sensor_data)
 # Shape: (8, 1000)
 
-# 3. Feature extraction (opcional)
+# 3. Feature extraction (optional)
 extractor = FeatureExtractor()
 features = extractor.extract_all_features(clean_data)
 # Shape: (96,) - 12 features × 8 sensors
 
-# 4. Modelo
+# 4. Model
 model = CNN1DClassifier(n_sensors=8, n_classes=2)
 prediction = model(torch.tensor(clean_data))
-# Shape: (2,) - probabilidades por clase
+# Shape: (2,) - probabilities per class
 
-# 5. Resultado
-class_name = ["Sano", "Diabetes"][prediction.argmax()]
+# 5. Result
+class_name = ["Healthy", "Diabetes"][prediction.argmax()]
 confidence = prediction.max().item()
 ```
 
-## Consideraciones de Diseño
+## Design Considerations
 
-### Escalabilidad
-- Modular: cada componente es independiente
-- Extensible: fácil añadir nuevas enfermedades
-- Configurable: YAML configs para diferentes casos
+### Scalability
+- Modular: each component is independent
+- Extensible: easy to add new diseases
+- Configurable: YAML configs for different cases
 
 ### Performance
-- Inferencia en tiempo real (<1s)
-- Batch processing para entrenamiento
-- GPU acceleration con PyTorch
+- Real-time inference (<1s)
+- Batch processing for training
+- GPU acceleration with PyTorch
 
-### Robustez
-- Validación cruzada
+### Robustness
+- Cross-validation
 - Data augmentation
-- Ensemble methods (futuro)
+- Ensemble methods (future)
 
-### Explicabilidad
+### Explainability
 - Attention weights visualization
 - Feature importance
-- Grad-CAM para CNNs
+- Grad-CAM for CNNs
 
-## Hardware Recomendado
+## Recommended Hardware
 
-**Sensores:**
-- Bosch BME688 (gas sensor con AI)
-- Sensores MQ series (Arduino compatible)
+**Sensors:**
+- Bosch BME688 (gas sensor with AI)
+- MQ series sensors (Arduino compatible)
 - Aromyx EssenceChip
 
-**Computación:**
-- Raspberry Pi 4 (inferencia)
+**Computing:**
+- Raspberry Pi 4 (inference)
 - NVIDIA Jetson Nano (edge AI)
-- GPU server (entrenamiento)
+- GPU server (training)
 
-## Referencias Técnicas
+## Technical References
 
 - Haick et al. (2014) - "Diagnosing lung cancer in exhaled breath using gold nanoparticles"
 - Amann et al. (2014) - "The human volatilome: volatile organic compounds in breath"

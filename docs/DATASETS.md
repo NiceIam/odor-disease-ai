@@ -1,22 +1,22 @@
-# Datasets Disponibles
+# Available Datasets
 
-## Datasets Públicos
+## Public Datasets
 
 ### 1. UCI Machine Learning Repository - Gas Sensor Array
 
 **URL:** https://archive.ics.uci.edu/ml/datasets/gas+sensor+array+drift+dataset
 
-**Descripción:**
-- 13,910 mediciones de 16 sensores de gas
-- 6 clases de gases diferentes
-- Datos recolectados durante 36 meses
-- Incluye drift temporal de sensores
+**Description:**
+- 13,910 measurements from 16 gas sensors
+- 6 different gas classes
+- Data collected over 36 months
+- Includes temporal sensor drift
 
-**Formato:**
+**Format:**
 - CSV files
-- Features: 128 (16 sensores × 8 características)
+- Features: 128 (16 sensors × 8 features)
 
-**Uso:**
+**Usage:**
 ```python
 import pandas as pd
 data = pd.read_csv('gas_sensor_data.csv')
@@ -26,62 +26,62 @@ data = pd.read_csv('gas_sensor_data.csv')
 
 **URL:** https://www.kaggle.com/datasets/
 
-**Descripción:**
-- Datos de narices electrónicas
-- Múltiples tipos de sensores
-- Aplicaciones en detección de enfermedades
+**Description:**
+- Electronic nose data
+- Multiple sensor types
+- Applications in disease detection
 
 ### 3. OpenSmell (MIT)
 
 **URL:** https://openbci.com/
 
-**Descripción:**
-- Perfiles moleculares de olores
-- Base de datos de compuestos volátiles
-- Mapeo estructura-olor
+**Description:**
+- Molecular odor profiles
+- Volatile compound database
+- Structure-odor mapping
 
-## Datasets Médicos Específicos
+## Disease-Specific Medical Datasets
 
 ### Diabetes Detection
 
-**Biomarcador:** Acetona en aliento
+**Biomarker:** Acetone in breath
 
-**Características:**
-- Concentración de acetona: 1.8-3.7 ppm (diabéticos) vs 0.3-0.9 ppm (sanos)
-- Otros COVs: isopreno, metanol
+**Characteristics:**
+- Acetone concentration: 1.8-3.7 ppm (diabetics) vs 0.3-0.9 ppm (healthy)
+- Other VOCs: isoprene, methanol
 
-**Papers de referencia:**
+**Reference papers:**
 - Deng et al. (2004) - "Determination of acetone in human breath by gas chromatography"
 - Righettoni et al. (2012) - "Breath acetone monitoring by portable Si:WO3 gas sensors"
 
 ### Lung Cancer Detection
 
-**Biomarcador:** Benceno, tolueno, xileno
+**Biomarker:** Benzene, toluene, xylene
 
-**Características:**
-- Perfil de 9 COVs distintivos
-- Sensibilidad: 85-90%
-- Especificidad: 80-85%
+**Characteristics:**
+- Profile of 9 distinctive VOCs
+- Sensitivity: 85-90%
+- Specificity: 80-85%
 
-**Papers de referencia:**
+**Reference papers:**
 - Phillips et al. (2003) - "Volatile organic compounds in breath as markers of lung cancer"
 - Peng et al. (2010) - "Detection of lung, breast, colorectal, and prostate cancers from exhaled breath"
 
 ### Parkinson's Disease
 
-**Biomarcador:** Sebo dérmico (caso Joy Milne)
+**Biomarker:** Dermal sebum (Joy Milne case)
 
-**Características:**
-- Ácido hipúrico
-- Eicosano
+**Characteristics:**
+- Hippuric acid
+- Eicosane
 - Octadecanal
 
-**Papers de referencia:**
+**Reference papers:**
 - Trivedi et al. (2019) - "Discovery of volatile biomarkers of Parkinson's disease from sebum"
 
-## Formato de Datos
+## Data Format
 
-### Estructura Recomendada
+### Recommended Structure
 
 ```
 data/
@@ -99,7 +99,7 @@ data/
     └── diabetes_test.npy
 ```
 
-### Formato NPY
+### NPY Format
 
 ```python
 data = {
@@ -115,7 +115,7 @@ data = {
 np.save('dataset.npy', data)
 ```
 
-### Formato CSV
+### CSV Format
 
 ```csv
 timestamp,sensor_1,sensor_2,sensor_3,...,sensor_8,label
@@ -124,42 +124,42 @@ timestamp,sensor_1,sensor_2,sensor_3,...,sensor_8,label
 ...
 ```
 
-## Generación de Datos Sintéticos
+## Synthetic Data Generation
 
-Para pruebas y desarrollo, usa el script incluido:
+For testing and development, use the included script:
 
 ```bash
 python scripts/generate_synthetic_data.py
 ```
 
-Esto genera:
-- 400 muestras de entrenamiento por clase
-- 100 muestras de validación por clase
-- 100 muestras de test por clase
-- 8 sensores × 1000 muestras temporales
+This generates:
+- 400 training samples per class
+- 100 validation samples per class
+- 100 test samples per class
+- 8 sensors × 1000 temporal samples
 
-## Recolección de Datos Reales
+## Real Data Collection
 
-### Hardware Necesario
+### Required Hardware
 
-1. **Arduino + Sensores MQ**
-   - MQ-2: Gas inflamable
+1. **Arduino + MQ Sensors**
+   - MQ-2: Flammable gas
    - MQ-3: Alcohol
-   - MQ-4: Metano
-   - MQ-135: Calidad del aire
+   - MQ-4: Methane
+   - MQ-135: Air quality
 
 2. **Bosch BME688**
-   - Sensor de gas con AI integrada
+   - Gas sensor with integrated AI
    - I2C/SPI interface
-   - 4 heaters programables
+   - 4 programmable heaters
 
-3. **Protocolo de Recolección**
-   - Ayuno de 8 horas
-   - Muestra de aliento en bolsa Tedlar
-   - Exposición a sensores por 60 segundos
-   - Registro de metadata (edad, sexo, medicamentos)
+3. **Collection Protocol**
+   - 8-hour fasting
+   - Breath sample in Tedlar bag
+   - 60-second sensor exposure
+   - Record metadata (age, sex, medications)
 
-### Código de Adquisición
+### Acquisition Code
 
 ```python
 import serial
@@ -176,16 +176,16 @@ def collect_sample(duration=10):
     return np.array(data)
 ```
 
-## Consideraciones Éticas
+## Ethical Considerations
 
-- Consentimiento informado de pacientes
-- Anonimización de datos
-- Cumplimiento con HIPAA/GDPR
-- Aprobación de comité de ética
+- Informed patient consent
+- Data anonymization
+- HIPAA/GDPR compliance
+- Ethics committee approval
 
-## Citas y Atribución
+## Citations and Attribution
 
-Si usas estos datasets en publicaciones, cita:
+If you use these datasets in publications, cite:
 
 ```bibtex
 @article{haick2014,
